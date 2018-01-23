@@ -1,45 +1,46 @@
 class Board
-  attr_accessor :cells, :remaining
-
-  def initialize
-    reset!
+  attr_accessor :cells
+  def initialize(cells = nil)
+    @cells = cells || Array.new(9, " ")
   end
+
+  def display 
+    puts " #{@cells[0]} | #{@cells[1]} | #{@cells[2]} "
+    puts "-----------"
+    puts " #{@cells[3]} | #{@cells[4]} | #{@cells[5]} "
+    puts "-----------"
+    puts " #{@cells[6]} | #{@cells[7]} | #{@cells[8]} "
+  end
+
 
   def reset!
     self.cells = Array.new(9, " ")
   end
 
-  def display
-    puts " #{self.cells[0]} | #{self.cells[1]} | #{self.cells[2]} "
-    puts "-----------"
-    puts " #{self.cells[3]} | #{self.cells[4]} | #{self.cells[5]} "
-    puts "-----------"
-    puts " #{self.cells[6]} | #{self.cells[7]} | #{self.cells[8]} "
-  end
-
-  def position(num)
-    return self.cells[num.to_i-1]
+  def position(index)
+    self.cells[index.to_i - 1]
   end
 
   def full?
-    x = self.cells.count("X")
-    o = self.cells.count("O")
-    x + o == 9 ? true : false
+    self.cells.all? {|cell| cell == "X" || cell == "O"}
   end
 
   def turn_count
-    return self.cells.count("X") + self.cells.count("O")
+    self.cells.select{|c| !c.lstrip.empty?}.count
   end
 
-  def taken?(position)
-    self.cells[position.to_i-1] == "X" ? true : self.cells[position.to_i-1] == "O" ? true : false
+  def taken?(input)
+    index = (input.to_i)-1
+    self.cells[index] == " " ? false : true
   end
 
-  def valid_move?(position)
-    position.to_i.between?(1, 9) && taken?(position) == false ? true : false
+  def valid_move?(input)
+    !taken?(input) && (1..9).member?(input.to_i)
   end
 
-  def update(position, player)
-    self.cells[position.to_i-1] = player.token
+  def update(input, player)
+    self.cells[input.to_i-1] = player.token
   end
+
+
 end
